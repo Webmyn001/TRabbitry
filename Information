@@ -1,0 +1,86 @@
+
+
+// create new lesson
+const createForm = async (req, res,next) =>  {
+     
+    try{
+
+        const lesson = await Form.create(req.body)
+        res.status(201).json({
+          success: true,
+          lesson
+        })
+      }
+      catch (error) {
+          console.log(error);
+          next(error);
+      }
+  }
+
+
+
+ 
+ // get all lessons
+
+ const getFormData = async (req,res) => {
+   const lesson = await Form.find({}).sort({createdAt:+1})
+   res.status(200).json(lesson)
+ }
+
+
+
+ 
+ const deleteForm = async (req, res) => {
+   const {id} = req.params
+   if (!mongoose.Types.ObjectId.isValid(id)) {
+       return res.status(404).json({error: "Not found"})
+   }
+   
+   const lesson = await Form.findOneAndDelete({_id:id})
+  if (!lesson) {
+   return res.status(400).json({error: "Not found"})
+ }
+  res.status(200).json(lesson)
+ }
+
+
+ const varifyUser = () => {
+  const token = res.cookies.token;
+  if(!token) {
+    return res.json("missing token")
+  } else{
+    jwt.verify(token, "jwt-secret-key", (err, decoded) => {
+      if(err) {
+        return res.json("erroe with token")
+      }else {
+        if(decoded.Role === "admin") {
+          next()
+        } else{
+          return res.json("not admin")
+        }
+      }
+    })
+  }
+}
+
+
+
+const Dashboard =  (req, res ) => {
+  const token = req.cookies.token;
+  if(!token) {
+    return res.json("missing token")
+  } else{
+    jwt.verify(token, "jwt-secret-key", (err, decoded) => {
+      if(err) {
+        return res.json("error with token")
+      }else {
+        if(decoded.Role === "Admin") {
+          const Alluser = User.findOne({Email : decoded.Email})
+          res.status(200).json({Alluser})
+        } else{
+          return res.json({Status: false, msg:"You are not Authorized"})
+        }
+      }
+    })
+  }
+}
