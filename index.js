@@ -1,4 +1,5 @@
 const FormRoutes = require("./Routes/UserRoutes")
+const PostRoutes = require("./Routes/PostRoutes")
 
 
 
@@ -17,7 +18,7 @@ app.use(bp.urlencoded({ extended: true, limit :'10mb' }))
 
 app.use(cors(
    {
-      origin:["http://localhost:3000"],
+      origin:["https://trabbitry-prod-site.onrender.com"],
       methods: ["GET", "POST"],
       credentials: true
    }
@@ -50,6 +51,8 @@ const connectDB = async ()=> {
 
  
 app.use("/api/form", FormRoutes)
+app.use("/api/posts", PostRoutes)
+
 
 
 
